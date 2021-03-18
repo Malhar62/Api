@@ -107,7 +107,7 @@ export function useNavigationPersistence(storage: any, persistenceKey: string) {
     routeNameRef.current = currentRouteName
 
     // Persist state to storage
-    storage.save(persistenceKey, state)
+    //storage.save(persistenceKey, state)
   }
 
   const restoreState = useCallback(async () => {

@@ -42,61 +42,108 @@ export class Api {
         Accept: "application/json",
       },
     })
+    // this.apisauce.addAsyncRequestTransform(request => async () => {
+    //   let authKey = await AsyncStorage.getItem("userToken");
+    //   if (authKey) {
+    //     request.headers["Authorization"] = 'Bearer ' + authKey
+    //   }
+    // })
+    return this.apisauce;
   }
 
   /**
-   * Gets a list of users.
+   * Get user by id
    */
-  async getUsers(): Promise<Types.GetUsersResult> {
+  /*async getUser(userId: number): Promise<Types.GetUser> {
     // make the api call
-    const response: ApiResponse<any> = await this.apisauce.get(`/users`)
-
+    const response: ApiResponse<any> = await this.apisauce.get(`/users/${userId}`)
+    console.log("response PO ",response)
     // the typical ways to die when calling an api
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-
-    const convertUser = raw => {
-      return {
-        id: raw.id,
-        name: raw.name,
-      }
-    }
-
     // transform the data into the format we are expecting
     try {
-      const rawUsers = response.data
-      const resultUsers: Types.User[] = rawUsers.map(convertUser)
-      return { kind: "ok", users: resultUsers }
+      return { kind: "ok", data: response.data, status: response.status }
     } catch {
       return { kind: "bad-data" }
     }
-  }
-
-  /**
-   * Gets a single user by ID
-   */
-
-  async getUser(id: string): Promise<Types.GetUserResult> {
+  }*/
+  async getUserList(pageNo: number): Promise<Types.GetUser> {
     // make the api call
-    const response: ApiResponse<any> = await this.apisauce.get(`/users/${id}`)
-
+    const response: ApiResponse<any> = await this.apisauce.get(`api/users?page=${pageNo}`)
     // the typical ways to die when calling an api
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-
     // transform the data into the format we are expecting
     try {
-      const resultUser: Types.User = {
-        id: response.data.id,
-        name: response.data.name,
-      }
-      return { kind: "ok", user: resultUser }
+      return { kind: "ok", data: response.data, status: response.status }
     } catch {
       return { kind: "bad-data" }
     }
   }
-}
+  async deleteUserList(info): Promise<Types.GetUser> {
+    // make the api call
+    const response: ApiResponse<any> = await this.apisauce.delete(`api/users?page=${info.pageNo}`,{
+      id:info.id
+    })
+    // the typical ways to die when calling an api
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    // transform the data into the format we are expecting
+    try {
+      return { kind: "ok", data: response.data, status: response.status }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+  /**
+   * Get user by id
+   */  async postUserList(obj: any): Promise<Types.GetUser> {
+    // make the api call
+    
+   
+      const response: ApiResponse<any> = await this.apisauce.post(`api/users?page=${obj.pageNo}`,{
+        id:100,
+        email:'mvp@ama.com',
+        last_name:obj.firstName,
+        first_name:obj.lastName,
+        avatar:'no one',
+      })
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+        }
+        try {
+      return { kind: "ok", data: response.data, status: response.status }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+  async putUserList(obj: any): Promise<Types.GetUser> {
+    // make the api call
+    
+   
+      const response: ApiResponse<any> = await this.apisauce.put(`api/users?page=${obj.pageNo}`,{
+        id:100,
+        email:'mvp@ama.com',
+        last_name:obj.firstName,
+        first_name:obj.lastName,
+        avatar:'no one',
+      },{headers: {"Content-Type": "text/plain"}})
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+        }
+        try {
+      return { kind: "ok", data: response.data, status: response.status }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+    }
